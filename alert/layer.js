@@ -2,10 +2,8 @@
   "use strict";
 
   var $, win, ready = {
-    config: {},
-    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;'],
-    //五种原始层模式
-    type: ['dialog']
+     // 确定，取消 的Unicode编码
+    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;']
   };
 
 //默认内置方法。
@@ -22,7 +20,7 @@
   var Class = function(setings){
     var that = this;
     that.index = ++layer.index;
-    that.config = $.extend({}, that.config, ready.config, setings);
+    that.config = $.extend({}, that.config, setings);
     document.body ? that.creat() : setTimeout(function(){
       that.creat();
     }, 30);
@@ -232,11 +230,14 @@
     var layero = $('#layui-layer'+ index), closeAnim = 'layer-anim-close';
     if(!layero[0]) return;
 
+    $('.layui-layer').remove();
+
     if(layero.data('isOutAnim')){
       layero.addClass(closeAnim);
     }
 
-    $('#layui-layer-moves, #layui-layer-shade' + index).remove();
+    // 源码中的 #layui-layer-moves 修改为 .layui-layer-move，因为源码是错的，没有#layui-layer-moves
+    $('.layui-layer-move, #layui-layer-shade' + index).remove();
   };
 
 //主入口
