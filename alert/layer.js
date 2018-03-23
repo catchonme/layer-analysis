@@ -27,12 +27,8 @@
 
   Class.pt = Class.prototype;
 
-  var doms = [];
-  doms.anim = ['layer-anim'];
-
   Class.pt.config = {
     type:0,
-    fixed:true,
     move:'.layui-layer-title',
     title: '&#x4FE1;&#x606F;',
     offset:'auto',
@@ -40,7 +36,6 @@
     closeBtn : 1,
     time:0,
     zIndex:19891014,
-    anim:0,
     isOutAnim:true,
     icon:-1
   }
@@ -56,7 +51,7 @@
       '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" times='+times+' style="z-index:' + (zIndex - 1) + '; background-color:#000; opacity:0.3;"></div>',
 
       // 主体
-      '<div class="layui-layer layui-layer-dialog" id="layui-layer' +times+'" type="dialog" times="'+times+'" showtime="'+config.time+'" conType="'+(conType ? 'object' : 'string')+'" style="z-index:' +zIndex+'">'
+      '<div class="layui-layer layui-layer-dialog layer-anim" id="layui-layer' +times+'" type="dialog" times="'+times+'" showtime="'+config.time+'" conType="'+(conType ? 'object' : 'string')+'" style="z-index:' +zIndex+'">'
       +   titleHTML
       +   '<div class="layui-layer-content layui-layer-padding">'
       +     '<i class="layui-layer-ico layui-layer-ico' +config.icon+'"></i>'
@@ -94,14 +89,7 @@
       that.offset();
     });
 
-    config.time <= 0 || setTimeout(function(){
-      layer.close(that.index)
-    }, config.time);
     that.move().callback();
-
-    if (doms.anim[config.anim]) {
-      that.layero.addClass(doms.anim[config.anim]);
-    };
 
     if (config.isOutAnim) {
       that.layero.data('isOutAnim', true);
@@ -204,7 +192,6 @@
   ready.run = function(_$) {
     $ = _$;
     win = $(window);
-    doms.html = $('html');
     layer.open = function(deliver) {
       var o = new Class(deliver);
       return o.index;
