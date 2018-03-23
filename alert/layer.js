@@ -2,7 +2,7 @@
   "use strict";
 
   var $, win, ready = {
-    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;']
+    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;'] // ['确认','取消']的unicode编码
   };
 
   var layer = {
@@ -28,43 +28,36 @@
   Class.pt = Class.prototype;
 
   Class.pt.config = {
-    type:0,
-    move:'.layui-layer-title',
-    title: '&#x4FE1;&#x606F;',
-    offset:'auto',
-    area:'auto',
-    closeBtn : 1,
+    title: '&#x4FE1;&#x606F;', // '信息'的unicode编码
     time:0,
     zIndex:19891014,
-    isOutAnim:true,
     icon:-1
   }
 
-  Class.pt.vessel = function(conType, callback) {
+  Class.pt.vessel = function(callback) {
     var that = this, times = that.index, config = that.config;
     var zIndex = config.zIndex + times;
-    var titleHTML = '<div class="layui-layer-title">'+ config.title+'</div>';
     config.zIndex = zIndex;
 
-    callback([
+    var html =
       //遮罩
-      '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" times='+times+' style="z-index:' + (zIndex - 1) + '; background-color:#000; opacity:0.3;"></div>',
-
+      '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" style="z-index:'+(zIndex - 1)+'; background-color:#000; opacity:0.3;"></div>'
       // 主体
-      '<div class="layui-layer layui-layer-dialog layer-anim" id="layui-layer' +times+'" type="dialog" times="'+times+'" showtime="'+config.time+'" conType="'+(conType ? 'object' : 'string')+'" style="z-index:' +zIndex+'">'
-      +   titleHTML
+      + '<div class="layui-layer layui-layer-dialog layer-anim" id="layui-layer'+times+'" style="z-index:'+zIndex+'">'
+      +   '<div class="layui-layer-title">'+config.title+'</div>'
       +   '<div class="layui-layer-content layui-layer-padding">'
-      +     '<i class="layui-layer-ico layui-layer-ico' +config.icon+'"></i>'
+      +     '<i class="layui-layer-ico layui-layer-ico'+config.icon+'"></i>'
       +       config.content
-      +    '</div>'
+      +   '</div>'
       +   '<span class="layui-layer-setwin">'
       +      '<a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>'
-      +    '</span>'
+      +   '</span>'
       +   '<div class="layui-layer-btn">'
       +     '<a class="layui-layer-btn0">'+[config.btn]+'</a>'
-      +    '</div>'
-      + '</div>'
-    ]);
+      +   '</div>'
+      + '</div>';
+
+    callback(html);
     return that;
   };
 
@@ -72,15 +65,13 @@
     var that = this
       ,config = that.config
       ,times = that.index
-      ,content = that.content
-      ,conType = typeof content === 'object'
       ,body = $('body');
 
+    // 确认右下角有几个button
     config.btn = ('btn' in config) ? config.btn : ready.btn[0];
 
-    that.vessel(conType, function(html){
-      body.append(html[0]);
-      body.append(html[1]);
+    that.vessel(function(html){
+      body.append(html);
       that.layero = $('#layui-layer' + times);
     });
 
@@ -90,10 +81,6 @@
     });
 
     that.move().callback();
-
-    if (config.isOutAnim) {
-      that.layero.data('isOutAnim', true);
-    }
   };
 
   Class.pt.offset = function() {
@@ -109,22 +96,18 @@
       ,config = that.config
       ,doc = $(document)
       ,layero = that.layero
-      ,moveElem = layero.find(config.move)
+      ,moveElem = layero.find('.layui-layer-title')
       ,dict = {};
 
-    if (config.move) {
-      moveElem.css('cursor','move');
-    }
+    moveElem.css('cursor','move');
 
     moveElem.on('mousedown', function(e){
       e.preventDefault();
-      if (config.move) {
-        dict.moveStart = true;
-        dict.offset = [
-          e.clientX - parseFloat(layero.css('left')),
-          e.clientY - parseFloat(layero.css('top'))
-        ];
-      }
+      dict.moveStart = true;
+      dict.offset = [
+        e.clientX - parseFloat(layero.css('left')),
+        e.clientY - parseFloat(layero.css('top'))
+      ];
     });
 
     doc.on('mousemove', function(e) {
@@ -178,13 +161,10 @@
 
   // 关闭当前弹窗
   layer.close = function(index) {
-    var layero = $('#layui-layer'+index), closeAnim = 'layer-anim-close';
+    var layero = $('#layui-layer'+index);
     if(!layero[0]) return;
 
     $(".layui-layer").remove();
-    if (layero.data('isOutAnim')) {
-      layero.addClass(closeAnim);
-    }
 
     $('.layui-layer-move, #layui-layer-shade'+index).remove();
   };
