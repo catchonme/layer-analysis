@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="../skin/default/layer.css" rel="stylesheet" type="text/css">
+    <link href="../skin/default/layer.css" rel="stylesheet" type="text/css"/>
     <script src="../jquery.js"></script>
     <script src="main.js"></script>
 </head>
 <body>
 <script>
-  layer.alert('alert info', {icon:0}, function(){
-    console.log('works')
-  });
+  layer.confirm('test-self',{title:'我的',icon:6}, function() {
+    console.log('yes')
+  }, function() {
+    console.log('cancel')
+  })
 </script>
 </body>
-
 </html>
