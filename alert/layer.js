@@ -8,10 +8,15 @@
   var layer = {
     index: (window.layer) ? 100000 : 0,
 
-    alert:function(content, options) {
+    alert:function(content, options, yes) {
+      var type = typeof options === 'function';
+      if (type) {
+        yes = options;
+      }
       return layer.open($.extend({
         content:content,
-      }, options));
+        yes:yes
+      }, type ? {} : options));
     }
 
   };
@@ -148,10 +153,13 @@
 
   // 给确定/右上角绑定关闭事件
   Class.pt.callback = function(){
-    var that = this, layero = that.layero;
+    var that = this, layero = that.layero, config = that.config;
 
     layero.find('.layui-layer-btn').children('a').on('click', function() {
       layer.close(that.index);
+      if (config.yes) {
+        config.yes();
+      }
     });
 
     layero.find('.layui-layer-close').on('click', function(){

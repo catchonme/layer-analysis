@@ -5,11 +5,13 @@
     <title>Title</title>
     <link href="./skin/default/layer.css" rel="stylesheet" type="text/css">
     <script src="jquery.js"></script>
-    <script src="layer.js"></script>
+    <script src="main.js"></script>
 </head>
 <body>
 <script>
-  layer.alert('main run', {icon:0});
+  layer.alert('main run', {icon:0}, function(){
+    console.log('works')
+  });
 </script>
 </body>
 
