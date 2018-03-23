@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../skin/default/layer.css" rel="stylesheet" type="text/css"/>
+    <script src="../jquery.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+<script>
+  // 使用prompt的三种形式
+  layer.prompt('这是默认输入的内容', {title:'告诉我你想吃什么'}, function(value){
+    console.log('输入的内容是: '+value)
+  })
+  /*layer.prompt( {title:'告诉我你想吃什么'}, function(value){
+    console.log('输入的内容是: '+value)
+  })*/
+  /*layer.prompt(function(value){
+    console.log('输入的内容是: '+value)
+  })*/
+</script>
+</body>
+</html>
