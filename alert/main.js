@@ -27,7 +27,6 @@
 
   Class.pt.config = {
     title: '&#x4FE1;&#x606F;', //'信息'的unicode编码
-    time:0,
     zIndex:19891014,
     icon:-1
   }
@@ -86,7 +85,6 @@
 
   Class.pt.move = function() {
     var that = this
-      ,config = that.config
       ,doc = $(document)
       ,layero = that.layero
       ,moveElem = layero.find('.layui-layer-title')
@@ -110,17 +108,17 @@
         var X = e.clientX - dict.offset[0],
             Y = e.clientY - dict.offset[1];
 
-        dict.stX = win.scrollLeft();
-        dict.stY = win.scrollTop();
+        var minLeft = win.scrollLeft(),
+            minTop = win.scrollTop();
 
-        if (!config.moveOut) {
-          var setRig = win.width() - layero.outerWidth() + dict.stX,
-              setBot = win.height() - layero.outerHeight() + dict.stY;
-          X < dict.stX && (X = dict.stX);
-          X > setRig && (X = setRig);
-          Y < dict.stY && (Y = dict.stY);
-          Y > setBot && (Y = setBot);
-        }
+        // 保持弹出栏在窗口内
+        var maxLeft = win.width() - layero.outerWidth() + win.scrollLeft(),
+            maxTop = win.height() - layero.outerHeight() + win.scrollTop();
+
+        X < minLeft && (X = minLeft);
+        X > maxLeft && (X = maxLeft);
+        Y < minTop && (Y = minTop);
+        Y > maxTop && (Y = maxTop);
 
         layero.css({
           left:X,
@@ -128,6 +126,7 @@
         })
       }
     }).on('mouseup', function(e) {
+      e.preventDefault();
       if (dict.moveStart) {
         delete dict.moveStart;
       }
