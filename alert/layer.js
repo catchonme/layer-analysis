@@ -60,18 +60,18 @@
       '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" times='+times+' style="z-index:' + (zIndex - 1) + '; background-color:#000; opacity:0.3;"></div>',
 
       //主体
-      '<div class="'+ 'layui-layer layui-layer-dialog'  + ' ' +'" id="'+ 'layui-layer' + times +'" type="dialog" times="'+ times +'" showtime="'+ config.time +'" conType="'+ (conType ? 'object' : 'string') +'" style="z-index: '+ zIndex +'; width:'+ config.area[0] + ';height:' + config.area[1] + (config.fixed ? '' : ';position:absolute;') +'">'
-      + titleHTML
-      + '<div class="layui-layer-content layui-layer-padding">'
-      + '<i class="layui-layer-ico layui-layer-ico'+ config.icon +'"></i>'
-      + config.content
-      + '</div>'
-      + '<span class="layui-layer-setwin">'
-      + '<a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>'
-      + '</span>'
-      + '<div class="layui-layer-btn">'
-      +   '<a class="layui-layer-btn0">'+ [config.btn] +'</a>'
-      + '</div>'
+      '<div class="layui-layer layui-layer-dialog" id="layui-layer' +times+'" type="dialog" times="'+times+'" showtime="'+config.time+'" conType="'+(conType ? 'object' : 'string')+'" style="z-index:' +zIndex+'">'
+      +   titleHTML
+      +   '<div class="layui-layer-content layui-layer-padding">'
+      +     '<i class="layui-layer-ico layui-layer-ico' +config.icon+'"></i>'
+      +       config.content
+      +    '</div>'
+      +   '<span class="layui-layer-setwin">'
+      +      '<a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>'
+      +    '</span>'
+      +   '<div class="layui-layer-btn">'
+      +     '<a class="layui-layer-btn0">'+[config.btn]+'</a>'
+      +    '</div>'
       + '</div>'
     ], titleHTML, $('<div class="layui-layer-move"></div>'));
     return that;
