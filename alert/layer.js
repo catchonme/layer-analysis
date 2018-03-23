@@ -2,8 +2,8 @@
   "use strict";
 
   var $, win, ready = {
-     // 确定，取消 的Unicode编码
-    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;']
+    // 确定，取消 的Unicode编码
+    btn: ['&#x786E;&#x5B9A;', '&#x53D6;&#x6D88;'],
   };
 
 //默认内置方法。
@@ -35,7 +35,6 @@
 //默认配置
   Class.pt.config = {
     type: 0,
-    shade: 0.3,
     fixed: true,
     move: '.layui-layer-title',
     title: '&#x4FE1;&#x606F;',
@@ -58,7 +57,7 @@
 
     callback([
       //遮罩
-      config.shade ? ('<div class="layui-layer-shade" id="layui-layer-shade'+ times +'" times="'+ times +'" style="'+ ('z-index:'+ (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:'+ (config.shade[0]||config.shade) +'; filter:alpha(opacity='+ (config.shade[0]*100||config.shade*100) +');') +'"></div>') : '',
+      '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" times='+times+' style="z-index:' + (zIndex - 1) + '; background-color:#000; opacity:0.3;"></div>',
 
       //主体
       '<div class="'+ 'layui-layer layui-layer-dialog'  + ' ' +'" id="'+ 'layui-layer' + times +'" type="dialog" times="'+ times +'" showtime="'+ config.time +'" conType="'+ (conType ? 'object' : 'string') +'" style="z-index: '+ zIndex +'; width:'+ config.area[0] + ';height:' + config.area[1] + (config.fixed ? '' : ';position:absolute;') +'">'
@@ -95,14 +94,13 @@
       body.append(html[1]);
       $('.layui-layer-move')[0] || body.append(ready.moveElem = moveElem);
       that.layero = $('#layui-layer' + times);
-    }).auto(times);
+    });
 
     //坐标自适应浏览器窗口尺寸
     that.offset()
     if(config.fixed){
       win.on('resize', function(){
         that.offset();
-        (/^\d+%$/.test(config.area[0]) || /^\d+%$/.test(config.area[1])) && that.auto(times);
       });
     }
 
@@ -120,15 +118,6 @@
     if(config.isOutAnim){
       that.layero.data('isOutAnim', true);
     }
-  };
-
-//自适应
-  Class.pt.auto = function(index){
-    var that = this, config = that.config, layero = $('#layui-layer' + index);
-    if(config.area[0] === '' && config.maxWidth > 0){
-      layero.outerWidth() > config.maxWidth && layero.width(config.maxWidth);
-    }
-    return that;
   };
 
 //计算坐标
@@ -230,13 +219,11 @@
     var layero = $('#layui-layer'+ index), closeAnim = 'layer-anim-close';
     if(!layero[0]) return;
 
-    $('.layui-layer').remove();
-
+    $('.layui-layer').remove()
     if(layero.data('isOutAnim')){
       layero.addClass(closeAnim);
     }
 
-    // 源码中的 #layui-layer-moves 修改为 .layui-layer-move，因为源码是错的，没有#layui-layer-moves
     $('.layui-layer-move, #layui-layer-shade' + index).remove();
   };
 
