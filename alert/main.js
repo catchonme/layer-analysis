@@ -95,12 +95,14 @@
     moveElem.on('mousedown', function(e){
       e.preventDefault();
       dict.moveStart = true;
+      // 鼠标按下的位置距离弹出栏的最左端/最右端的距离
       dict.offset = [
         e.clientX - parseFloat(layero.css('left')),
         e.clientY - parseFloat(layero.css('top'))
       ];
     });
 
+    // 使用doc而不是moveElem，分别测试后，使用doc拖动更流畅
     doc.on('mousemove', function(e) {
       if (dict.moveStart) {
         e.preventDefault();
