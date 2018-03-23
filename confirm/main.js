@@ -11,12 +11,13 @@
       var type = typeof options === 'function';
       if (type) {
         yes = options;
+        options = {};
       }
       return layer.open($.extend({
         content:content,
         yes: yes,
         btn:this.btn[0]
-      }, type ? {} : options));
+      }, options));
     },
 
     confirm : function(content, options, yes, cancel) {
@@ -24,13 +25,14 @@
       if (type) {
         cancel = yes;
         yes = options;
+        options = {};
       }
       return layer.open($.extend({
         content:content,
         yes:yes,
         cancel:cancel,
         btn:this.btn
-      }, type ? {} : options));
+      }, options));
     }
   };
 
@@ -170,15 +172,15 @@
     layero.find('.layui-layer-btn').children('a').on('click', function(event) {
       layer.close(that.index);
 
+      // 第一个[确定]按钮
       if (event.target.className == 'layui-layer-btn0') {
         if (config.yes) {
           config.yes();
         }
+        // 第二个[取消按钮]
       } else if (event.target.className == 'layui-layer-btn1') {
         if (config.cancel) {
           config.cancel();
-        } else {
-          console.log('not yes')
         }
       }
 

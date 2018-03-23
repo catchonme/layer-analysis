@@ -15,9 +15,41 @@
       }
       return layer.open($.extend({
         content:content,
-        yes:yes
+        yes: yes,
+        btn:this.btn[0]
       }, options));
-    }
+    },
+
+    confirm: function(content, options, yes, cancel) {
+      var type = typeof options === 'function';
+      if (type) {
+        cancel = yes;
+        yes = options;
+        options = {};
+      }
+      return layer.open($.extend({
+        content:content,
+        yes:yes,
+        cancel:cancel,
+        btn:this.btn
+      }, options));
+    },
+
+    msg: function(content, options, yes) {
+      var type = typeof options === 'function';
+      if (type) {
+        yes = options;
+        options = {};
+      }
+      return layer.open($.extend({
+        content:content,
+        yes:yes,
+        btn:false,
+        title:false, // msg样式的弹出，取消title
+        closeBtn:false, // 右上角的关闭
+        time:3000 // 3000ms后自动关闭弹窗
+      }, options))
+    },
   };
 
   var Class = function(settings) {
@@ -34,7 +66,9 @@
   Class.pt.config = {
     title: '&#x4FE1;&#x606F;', //'信息'的unicode编码
     zIndex:19891014,
-    icon:-1
+    icon:-1,
+    closeBtn:true, // msg 没有确定/取消按钮
+    time:0, // 弹出框多久自动关闭，0代表不自动关闭
   }
 
   // 这里就是 UI
@@ -42,25 +76,41 @@
     var that = this, times = that.index, config = that.config;
     var zIndex = config.zIndex + times;
     config.zIndex = zIndex;
-    // 获取右下角的'确定'按钮
-    config.btn = ('btn' in config) ? config.btn : layer.btn[0];
+
+    var titleHTML = '';
+    if (config.title) {
+      titleHTML = '<div class="layui-layer-title">'+config.title+'</div>';
+    }
+
+    var closeX = "";
+    if (config.closeBtn) {
+      closeX ='<a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>'
+    }
+
+    // alert只有一个[确定]按钮，confirm有两个按钮[确定, 取消]， msg没有按钮
+    var buttonHTML = '';
+    if (typeof (config.btn) == 'object') {
+      buttonHTML += '<div class="layui-layer-btn">';
+      for (var i=0, len=config.btn.length; i<len; i++) {
+        buttonHTML += '<a class="layui-layer-btn'+i+'">'+config.btn[i]+'</a>'
+      }
+      buttonHTML += '</div>';
+    }
 
     var html =
       //遮罩
       '<div class="layui-layer-shade" id="layui-layer-shade'+times+'" style="z-index:'+(zIndex-1)+'; background-color:#000; opacity:0.3;"></div>'
       // 主体
       + '<div class="layui-layer layui-layer-dialog layer-anim" id="layui-layer'+times+'" style="z-index:'+zIndex+'">'
-      +   '<div class="layui-layer-title">'+config.title+'</div>'
+      +   titleHTML
       +   '<div class="layui-layer-content layui-layer-padding">'
-      +     '<i class="layui-layer-ico layui-layer-ico' +config.icon+'"></i>'
+      +     '<i class="layui-layer-ico layui-layer-ico'+config.icon+'"></i>'
       +       config.content
       +    '</div>'
       +   '<span class="layui-layer-setwin">'
-      +      '<a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:;"></a>'
-      +    '</span>'
-      +   '<div class="layui-layer-btn">'
-      +     '<a class="layui-layer-btn0">'+[config.btn]+'</a>'
-      +    '</div>'
+      +      closeX
+      +   '</span>'
+      +   buttonHTML
       + '</div>'
 
     $('body').append(html);
@@ -108,7 +158,6 @@
       ];
     });
 
-    // 使用doc而不是moveElem，分别测试后，使用doc拖动更流畅
     doc.on('mousemove', function(e) {
       if (dict.moveStart) {
         e.preventDefault();
@@ -134,7 +183,6 @@
         })
       }
     }).on('mouseup', function(e) {
-      e.preventDefault();
       if (dict.moveStart) {
         delete dict.moveStart;
       }
@@ -146,16 +194,34 @@
   Class.pt.callback = function(){
     var that = this, layero = that.layero, config = that.config;
 
-    layero.find('.layui-layer-btn').children('a').on('click', function() {
-      layer.close(that.index);
-      if (config.yes) {
-        config.yes();
-      }
-    });
+    // 是否设定自动关闭弹窗时间
+    if (config.time && config.time > 0) {
+      setTimeout(function(){
+        layer.close(that.index);
+        if (config.yes) {
+          config.yes();
+        }
+      }, config.time);
+    } else {
+      layero.find('.layui-layer-btn').children('a').on('click', function(event) {
+        layer.close(that.index);
 
-    layero.find('.layui-layer-close').on('click', function(){
-      layer.close(that.index)
-    });
+        if (event.target.className == 'layui-layer-btn0') {
+          if (config.yes) {
+            config.yes();
+          }
+        } else if (event.target.className == 'layui-layer-btn1') {
+          if (config.cancel) {
+            config.cancel();
+          }
+        }
+      });
+
+      layero.find('.layui-layer-close').on('click', function(){
+        layer.close(that.index)
+      });
+    }
+
   };
 
   // 关闭当前弹窗
